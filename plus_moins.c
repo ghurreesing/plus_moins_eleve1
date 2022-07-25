@@ -2,92 +2,130 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
-int plus_moins(int valeur_a_trouver, int choix_joueur) {
+void plus_moins(int valeur_a_trouver, int choix_joueur) {
 
 	if(choix_joueur<valeur_a_trouver)
 	{
 		printf("plus\n");
-		return 0;
 	}
 	else if(choix_joueur>valeur_a_trouver)
 	{
 		printf("moins\n");
-		return 0;
 	}
 	else
 	{
 		printf("bingo\n");
-		return 1;
 	}
 
 }
 
-
 int main() {
-	int choix_joueur;
-	int valeur_a_trouver;
-	int lower = 1, upper = 100, count = 10;
-	int niveau;
 
-	srand(time(0));
+	int nombre_de_tour;
+	bool defaite=false;
+	int joueur=1;
+	int score_joueur1=0;
+	int score_joueur2=0;
+	int temp1=0;
+	int temp2=0;
 
-	valeur_a_trouver = (rand() % (upper - lower + 1)) + lower;
+        printf("Entrez le nombre de tour:"); 
+        scanf("%d",&nombre_de_tour);
+	printf("\n");
 
-	printf("Choisissez le mode de difficulté:\n"); 
-	printf("1. Facile --> Nombre d'essaie illimités\n");
-	printf("2. Moyen --> Nombre d'essaie 25\n");
-	printf("3. Difficile --> Nombre d'essaie 10\n");
-	printf("Entrez le niveau 1, 2 ou 3: ");
-	scanf("%d",&niveau);
-	if (niveau==1 || niveau==2 || niveau==3)
+
+
+	while(nombre_de_tour>0 || defaite==false)
 	{
 
-		printf("Entrez une valeur:");
-                scanf("%d",&choix_joueur);
+		int choix_joueur;
+        	int valeur_a_trouver;
+        	int lower = 1, upper = 100, count = 10;
+        	int nombre_de_coup;
 
-		if(niveau==1)
-		{ 
-			while(plus_moins(valeur_a_trouver,choix_joueur)!=1) 
+        	srand(time(0));
+
+        	valeur_a_trouver = (rand() % (upper - lower + 1)) + lower;
+
+		if(joueur==1)
+		{
+			printf("Joueur 1, Entrez le nombre de coup supérieur à 10:");
+        		scanf("%d",&nombre_de_coup);
+			printf("\n");
+			joueur=2;
+			score_joueur2=nombre_de_coup;
+			temp2=temp2+score_joueur2;
+		}
+		else if(joueur==2)
+		{
+			printf("Joueur 2, Entrez le nombre de coup supérieur à 10:");
+                        scanf("%d",&nombre_de_coup);
+			printf("\n");
+			joueur=1;
+			score_joueur1=nombre_de_coup;
+			temp1=temp1+score_joueur1;
+		}
+
+		nombre_de_coup=nombre_de_coup+1;
+		while(nombre_de_coup!=0)
+		{
+			nombre_de_coup=nombre_de_coup-1;
+	 		if(nombre_de_coup!=0 && (valeur_a_trouver<choix_joueur || valeur_a_trouver>choix_joueur))
 			{
-				printf("Entrez une valeur:");
-				scanf("%d",&choix_joueur);
+        			if(joueur==1)
+				{
+
+	                                printf("Joueur 1, Entrez une valeur:");
+                	                scanf("%d",&choix_joueur);
+					if(valeur_a_trouver!=choix_joueur)
+					{
+                                        	plus_moins(valeur_a_trouver,choix_joueur);
+						temp1=temp1-1;
+					}
+				}
+
+                                else if(joueur==2)
+                                {
+                                        printf("Joueur 2, Entrez une valeur:");
+                                       	scanf("%d",&choix_joueur);
+                                        if(valeur_a_trouver!=choix_joueur)
+                                        {
+                                                plus_moins(valeur_a_trouver,choix_joueur);
+						temp2=temp2 - 1;
+                                        }
+                                }
+			}
+			else if(valeur_a_trouver==choix_joueur)
+			{
+				plus_moins(valeur_a_trouver,choix_joueur);
+				nombre_de_coup=0;
+			}
+			else if(nombre_de_coup==0)
+			{
+				defaite=true;
 			}
 		}
-		else if (niveau==2)
-		{
-			for(int i=0;i<25;i++)
-			{
-				if(plus_moins(valeur_a_trouver,choix_joueur)!=1 && i<=23) 
-				{
-					printf("Entrez une valeur:");
-                                	scanf("%d",&choix_joueur);
-				}
-				else
-				{
-					i=25;  //reach end of loop if guessed correctly
-				}
-			}
-		}
-		else if(niveau==3)
-		{
-                        for(int i=0;i<10;i++)
-                        {
-                                if(plus_moins(valeur_a_trouver,choix_joueur)!=1 && i<=8) 
-                                {
-                                        printf("Entrez une valeur:");
-                                        scanf("%d",&choix_joueur);
-                                }
 
-                                else
-                                {
-                                        i=10; //reach end of loop if guessed correctly
+		nombre_de_tour=nombre_de_tour-1;
+		 if (nombre_de_tour==0)
+		 {
+			break;
+		 }
+	}
 
-                                }
+	printf("Score totale joueur 1: %d\n",temp1);
+	printf("Score totale joueur 2: %d\n",temp2);
 
-                        }
-		}
 
+	if(temp1>temp2)
+	{
+		printf("Joueur 1 est le gagnant\n");
+	}
+	else
+	{
+		printf("Joueur 2 est le gagnant\n");
 	}
 	return 0;
 }
